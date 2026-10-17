@@ -11217,6 +11217,12 @@ bool ImGui::BeginTooltipEx(ImGuiTooltipFlags tooltip_flags, ImGuiWindowFlags ext
 {
     ImGuiContext& g = *GImGui;
 
+    // MitchEngine: tooltips stay in their host viewport, including drag/drop previews.
+    // Locking the viewport also keeps normal tooltip placement within its window bounds,
+    // avoiding transient native windows and their focus/flicker issues on Windows.
+    ImGuiViewport* host_viewport = g.CurrentWindow ? g.CurrentWindow->Viewport : GetMainViewport();
+    SetNextWindowViewport(host_viewport->ID);
+
     if (g.DragDropWithinSource || g.DragDropWithinTarget)
     {
         // Drag and Drop tooltips are positioning differently than other tooltips:
